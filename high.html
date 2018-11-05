@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Space Voyage - Marius Ballot</title>
+  <meta name="viewport" content="width=device-width">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
+  <script src="js/three.js"></script>
+  <script src="js/ring.js"></script>
+  <!-- <script src="js/TweenLite.min.js"></script> -->
+  <link rel="icon" type="image/png" href="assets/icoLogo.png">
+
+  <script src="js/TweenMax.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-firestore.js"></script>
+
+</head>
+
+<body>
+  <div id="rideau"></div>
+  <div id="rideau2"></div>
+
+
+  <div class="instructions">
+    <h1>It's time to go back home.</h1>
+    <p>Be careFull on your way back... Tiny invisible <strong>space debris</strong> are every where, and at 16.18% the
+      speed of light,
+      you really don't want to hit one. <br>
+      Luckily we manage to make a <strong>safety tunel</strong> for your ship represented by visible <strong> blue
+        gates</strong>. <br>
+      Use your keyboard arrows to navigate inside the <strong>safety tunel</strong><br>
+      Good luck.</p>
+    <button class="gotIt">Got it</button>
+  </div>
+
+  <div class="interface">
+    <h2 class="score lose">0</h2>
+    <div class="bottom lose">
+      <h2 class="force"></h2>
+      <h2 class="timeIG"></h2>
+    </div>
+  </div>
+
+  <div class="flasher"></div>
+  <div class="flasherRed"></div>
+  <div class="loseScreen">
+    <h2>Game Over</h2>
+    <ul>
+      <li class="gate">Gates: </li>
+      <li class="time">Time: </li>
+      <li class="force">Max gravitational force: </li>
+    </ul>
+    <form id='addPlayer'>
+      <input type="text" name="name" placeholder="Enter your name">
+      <button>Send to Leader board</button>
+    </form>
+    <button class="leaderBoard">See leader board</button>
+
+  </div>
+
+
+  <div id="container"></div>
+
+
+  <script>
+    // Initialize Firebase
+    let config = {
+      apiKey: "AIzaSyA69XJjzXZf4bhvmX6uoLxNrAvaHoVnJNQ",
+      authDomain: "space-voyage-14369.firebaseapp.com",
+      databaseURL: "https://space-voyage-14369.firebaseio.com",
+      projectId: "space-voyage-14369",
+      storageBucket: "space-voyage-14369.appspot.com",
+      messagingSenderId: "1046276734567"
+    };
+    firebase.initializeApp(config);
+
+    let db = firebase.firestore();
+
+    db.settings({
+      timestampsInSnapshots: true
+    });
+
+
+  </script>
+
+  <script src="js/high.js"></script>
+  <script src="js/data.js"></script>
+</body>
+
+</html>

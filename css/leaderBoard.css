@@ -1,0 +1,106 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: radial-gradient(#151515, black);
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+#rideau {
+    background: white;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: all 1s;
+    z-index: 3;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+}
+
+#rideau h2 {
+    text-transform: uppercase;
+    letter-spacing: 10px;
+    animation: appear 0.3s alternate infinite;
+}
+
+#rideau.on {
+    width: 0;
+}
+
+.container {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+h1 {
+    letter-spacing: 10px;
+    text-transform: uppercase;
+}
+
+.board {
+    width: 50%;
+    position: absolute;
+}
+
+.board p {
+    width: 100%;
+    text-align: center;
+}
+
+.board .list {
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
+.board ul {
+    display: flex;
+    padding: 0;
+    width: 100%;
+    justify-content: space-between;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.board ul:nth-child(even) {
+    background: white;
+    color: black;
+}
+
+.board ul li {
+    list-style-type: none;
+    width: 30%;
+    overflow: hidden;
+}
+
+.board ul li:nth-child(2) {
+    text-align: center
+}
+
+.board ul li:nth-child(3) {
+    text-align: end;
+}
+
+.board ul li.indic {
+    font-weight: bold;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

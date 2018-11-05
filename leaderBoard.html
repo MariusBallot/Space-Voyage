@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Space Voyage - Marius Ballot</title>
+    <meta name="viewport" content="width=device-width">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+    <link href="css/leaderBoard.css" rel="stylesheet">
+    <script src="js/three.js"></script>
+    <!-- <script src="js/TweenLite.min.js"></script> -->
+    <link rel="icon" type="image/png" href="assets/icoLogo.png">
+
+    <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-firestore.js"></script>
+    <script src="js/MTLLoader.js"></script>
+    <script src="js/OBJLoader.js"></script>
+
+</head>
+
+<body>
+
+    <div id="rideau">
+        <h2>Loading</h2>
+    </div>
+
+    <div class="board">
+        <h1>Leader Board</h1>
+        <h2>Top 20</h2>
+        <div class="list">
+            <ul>
+                <li class="indic">Name</li>
+                <li class="indic">Gates Passed</li>
+                <li class="indic">Time in game</li>
+            </ul>
+        </div>
+        <p>Scroll down to see more</p>
+    </div>
+
+    <div id="container">
+
+    </div>
+
+
+    <script>
+        // Initialize Firebase
+        let config = {
+            apiKey: "AIzaSyA69XJjzXZf4bhvmX6uoLxNrAvaHoVnJNQ",
+            authDomain: "space-voyage-14369.firebaseapp.com",
+            databaseURL: "https://space-voyage-14369.firebaseio.com",
+            projectId: "space-voyage-14369",
+            storageBucket: "space-voyage-14369.appspot.com",
+            messagingSenderId: "1046276734567"
+        };
+        firebase.initializeApp(config);
+
+        let db = firebase.firestore();
+
+        db.settings({
+            timestampsInSnapshots: true
+        });
+    </script>
+    <script src="js/printData.js"></script>
+    <script src="js/cup.js"></script>
+</body>
+
+</html>

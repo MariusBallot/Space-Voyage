@@ -1,0 +1,210 @@
+body {
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+p {
+    line-height: 1.5em;
+    width: 55%;
+}
+
+.container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.welcomeScreen {
+    background: white;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 1s ease-in-out;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.welcomeScreen p {
+    width: 100%;
+}
+
+.welcomeScreen h1 {
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.welcomeScreen img {
+    width: 50px;
+    height: auto;
+}
+
+.welcomeScreen img.logo {
+    width: 300px;
+    height: auto;
+    animation: appear 2s;
+}
+
+button {
+    background: #ff4455;
+    color: white;
+    font-size: 1em;
+    text-transform: uppercase;
+    padding: 10px 30px;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.welcomeScreen p {
+    text-align: center;
+}
+
+.welcomeScreen .content {
+    opacity: 0;
+    animation: appear 1s 2s forwards;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes disappear {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+}
+
+.welcomeScreen.off {
+    transform: translateY(-102%);
+}
+
+.intro {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.intro.on {
+    animation: appear 1s 4s forwards;
+}
+
+.intro.on.off {
+    animation: disappear 1s forwards;
+}
+
+.graphisme {
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 2s 2s;
+    opacity: 0;
+    color: white;
+}
+
+.graphisme.on {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.graphisme h3 {
+    text-transform: uppercase;
+    letter-spacing: 10px;
+    margin: 0;
+}
+
+.graphisme p {
+    text-align: center;
+}
+
+.graphisme ul {
+    padding: 0;
+    display: flex;
+}
+
+.graphisme ul li {
+    list-style-type: none;
+    background: #ff4455;
+    color: white;
+    font-size: 1em;
+    text-transform: uppercase;
+    padding: 10px 30px;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.graphisme ul li:first-child, .graphisme ul li:nth-child(2) {
+    margin-right: 10px;
+}
+
+#rideau {
+    background: white;
+    height: 100vh;
+    width: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: all 1s;
+    z-index: 4;
+}
+
+#rideau.on {
+    width: 100vw;
+}
+
+@media only screen and (max-width: 1000px) {
+    .intro {
+        padding: 0 50px;
+        box-sizing: border-box;
+    }
+    .intro p {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .intro {
+        padding: 0 20px;
+    }
+}

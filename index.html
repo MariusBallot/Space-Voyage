@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Space Voyage - Marius Ballot</title>
+    <meta name="viewport" content="width=device-width">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/icoLogo.png">
+    <script src="js/three.js"></script>
+    <script src="js/TweenMax.min.js"></script>
+
+</head>
+
+<body>
+
+    <div id="rideau"></div>
+    <div class="welcomeScreen">
+        <img class="logo" src="assets/logo.svg" alt="spaceVoyageLogo">
+        <h1 class="content">Space Voyage</h1>
+        <img class="content" src="assets/headphone.svg" alt="headphones">
+        <p class="content">Welcome to Space Voyage. <br>
+            For a better experience, use head/earphones</p>
+        <button class="content">Ok</button>
+    </div>
+
+    <div class="intro">
+        <h2>Hi Capitain,</h2>
+        <p>It's now time to come back home. You've been on that space mission for <strong>8 years</strong> and you
+            don't have much
+            energy
+            left in your space craft. <br>
+            It's time to come home. Be carefull on your way back... <strong>The closer you are from us, the bigger
+                the
+                gravitational force will
+                be</strong>. <br>
+            And
+            since you are traveling at <strong>16.18% the speed of light</strong> you really don't want hit
+            anything..
+            Even Dust !</p>
+
+        <p>But no worries. While you were gone, we created a <strong>Safety Tunel</strong> represented by huge <strong>blue
+                gates</strong>. <br>
+            Those represent the <strong>only safe way to come back</strong>. Go out of those gates and it will be
+            <strong>instant
+                death</strong>...</p>
+        <p>Good luck, <br>Amiral Casanova</p>
+
+        <button id="letsGo">Let's go</button>
+    </div>
+    <div class="graphisme">
+        <h3>Graphic settings</h3>
+        <p>Choose accordingly to your device power</p>
+        <ul>
+            <li class='low'>Low</li>
+            <li class='medium'>Medium</li>
+            <li class='high'>High</li>
+        </ul>
+    </div>
+    <div id="container"></div>
+
+    <script src="js/homeWebgl.js"></script>
+</body>
+
+</html>

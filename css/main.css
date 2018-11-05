@@ -1,0 +1,262 @@
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(#151515, black);
+  font-family: 'Roboto', sans-serif;
+}
+
+p {
+  line-height: 1.5em;
+}
+
+#container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 10px;
+}
+
+.instructions {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition: all .3s;
+  color: white
+}
+
+.instructions.off {
+  opacity: 0;
+  transform: translateY(-50px)
+}
+
+.instructions button {
+  padding: 10px 30px;
+  background: #ff4455;
+  color: white;
+  font-size: 1em;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  border: none;
+}
+
+.interface {
+  position: relative;
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  padding: 0 200px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.interface .bottom {
+  display: flex;
+  font-size: 0.5em;
+  justify-content: space-between;
+  transition: transform 3s 3s;
+}
+
+.interface h2 {
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+  font-weight: 300;
+  font-size: 4em;
+  transition: transform 3s 3s;
+}
+
+.interface h2.lose {
+  transform: translateY(-200px);
+}
+
+.interface .bottom.lose {
+  transform: translateY(+200px);
+}
+
+.flasher {
+  width: 100vw;
+  height: 100vh;
+  background: white;
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.flasherRed {
+  width: 100vw;
+  height: 100vh;
+  background: red;
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.flasherRed.on {
+  animation: flash 1s;
+}
+
+.flasher.on {
+  animation: flash 1s;
+}
+
+@keyframes flash {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.loseScreen {
+  color: white;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /**/
+  /* background: #151515;
+  opacity: 1; */
+  /**/
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s 5s;
+}
+
+.loseScreen ul {
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 50px;
+  margin-top: 0;
+}
+
+.loseScreen ul li {
+  list-style-type: none;
+}
+
+.loseScreen ul li:nth-child(1), .loseScreen ul li:nth-child(2) {
+  margin-right: 50px;
+}
+
+.loseScreen.lose {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.loseScreen h2 {
+  text-transform: uppercase;
+  font-size: 3em;
+  letter-spacing: 10px;
+  margin-bottom: 50px;
+}
+
+.loseScreen form input {
+  font-size: 1em;
+  color: white;
+  padding: 10px 30px 10px 8px;
+  background: transparent;
+  border: solid white 1px;
+  border-radius: 5px;
+  margin-right: 20px;
+}
+
+.loseScreen form {
+  transition: all 1s;
+}
+
+.loseScreen form.finished {
+  opacity: 0;
+  transform: translateX(100px)
+}
+
+.loseScreen form button {
+  font-size: 1em;
+  padding: 10px 30px;
+  border: solid #ff4455 1px;
+  border-radius: 5px;
+  background: #ff4455;
+  color: white;
+  text-transform: uppercase;
+}
+
+.loseScreen .leaderBoard {
+  font-size: 1em;
+  padding: 10px 30px;
+  border: solid #ff4455 1px;
+  border-radius: 5px;
+  background: #ff4455;
+  color: white;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: all 1s 1s;
+}
+
+.loseScreen button.leaderBoard.on {
+  transform: translateY(-100%);
+  opacity: 1;
+}
+
+#rideau {
+  background: white;
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 1s;
+  z-index: 4;
+  animation: rideau 1s 3s forwards;
+  transition: all 1s;
+}
+
+@keyframes rideau {
+  to {
+    width: 0;
+  }
+}
+
+#rideau2 {
+  background: white;
+  height: 100vh;
+  width: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 1s;
+  z-index: 4;
+  transition: all 1s;
+}
+
+#rideau2.on {
+  width: 100vw;
+}
