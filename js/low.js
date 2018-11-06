@@ -1,12 +1,13 @@
 
 //VARIABLE SETUP ****************************************************************
-let scene, camera, started, renderer, movingSpeed, impact, passedRing, speedUp, gotIt, xpos, ypos, score, scoreHolder, play, ringSpeed, passingThresh, earth, losingVerif, displaySpeed, backMusic, force, timePlaceholder, timeIG;
+let scene, camera, started, fScore, renderer, movingSpeed, impact, passedRing, speedUp, gotIt, xpos, ypos, score, scoreHolder, play, ringSpeed, passingThresh, earth, losingVerif, displaySpeed, backMusic, force, timePlaceholder, timeIG;
 scoreHolder = document.querySelector('h2.score')
 ringSpeed = 0.1;
 displaySpeed = (ringSpeed * 1000).toFixed(2);
 xpos = 0;
 ypos = 0;
 score = 0;
+fScore = 0;
 movingSpeed = 0.3;
 passingThresh = 0.1;
 losingVerif = false;
@@ -124,6 +125,7 @@ function scoreBoard() {
 
 
 function losing() {
+    fScore = score;
     losingVerif = true;
     cameraFall();
     document.querySelector('.flasherRed').classList.add('on');

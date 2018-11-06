@@ -84,5 +84,24 @@
         camera.lookAt(scene.position);
     }
 
+    document.querySelector('button.low').addEventListener('click', function () {
+        document.querySelector('#rideau').classList.remove('on');
+        setTimeout(function () {
+            window.location.href = 'low.html'
+        }, 1000)
+    })
 
+    document.querySelector('button.medium').addEventListener('click', function () {
+        document.querySelector('#rideau').classList.remove('on');
+        setTimeout(function () {
+            window.location.href = 'medium.html'
+        }, 1000)
+    })
+
+    document.querySelector('button.high').addEventListener('click', function () {
+        document.querySelector('#rideau').classList.remove('on');
+        setTimeout(function () {
+            window.location.href = 'high.html'
+        }, 1000)
+    })
 }());
