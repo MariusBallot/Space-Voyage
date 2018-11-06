@@ -1,6 +1,6 @@
 let board = document.querySelector('.board .list');
 
-db.collection('players').orderBy('gates', 'desc').limit(50).get().then((snapshot) => {
+db.collection('players').orderBy('gates', 'desc').limit(20).get().then((snapshot) => {
     document.querySelector('#rideau').classList.add('on');
     for (let i = 0; i < snapshot.docs.length; i++) {
         console.log(snapshot.docs[i].data())

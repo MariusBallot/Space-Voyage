@@ -286,6 +286,43 @@ function checkKey(e) {
             ease: Power0.easeNone
         });
 
+
+    }
+
+    if (e.keyCode == '90' && !losingVerif) {
+        // up arrow
+        ypos += movingSpeed;
+        TweenLite.to(camera.position, 0.1, {
+            y: ypos,
+            ease: Power0.easeNone
+        });
+
+    }
+    else if (e.keyCode == '83' && !losingVerif) {
+        // down arrow
+        ypos -= movingSpeed;
+        TweenLite.to(camera.position, 0.1, {
+            y: ypos,
+            ease: Power0.easeNone
+        });
+
+    }
+    else if (e.keyCode == '81') {
+        // left arrow
+        xpos += movingSpeed;
+        TweenLite.to(camera.position, 0.1, {
+            x: xpos,
+            ease: Power0.easeNone
+        });
+
+    }
+    else if (e.keyCode == '68') {
+        // right arrow
+        xpos -= movingSpeed;
+        TweenLite.to(camera.position, 0.1, {
+            x: xpos,
+            ease: Power0.easeNone
+        });
     }
 
 }
