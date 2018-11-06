@@ -1,6 +1,6 @@
 
 //VARIABLE SETUP ****************************************************************
-let scene, camera, renderer, movingSpeed, impact, passedRing, speedUp, gotIt, xpos, ypos, score, scoreHolder, play, ringSpeed, passingThresh, earth, losingVerif, displaySpeed, backMusic, force, timePlaceholder, timeIG;
+let scene, camera, started, renderer, movingSpeed, impact, passedRing, speedUp, gotIt, xpos, ypos, score, scoreHolder, play, ringSpeed, passingThresh, earth, losingVerif, displaySpeed, backMusic, force, timePlaceholder, timeIG;
 scoreHolder = document.querySelector('h2.score')
 ringSpeed = 0.1;
 displaySpeed = (ringSpeed * 1000).toFixed(2);
@@ -17,6 +17,7 @@ passedRing = new Audio('assets/passedRing.mp3')
 passedRing.volume = 0.1;
 backMusic = new Audio('assets/droidBishopNightland.mp3');
 timeIG = 0;
+started = false;
 play = false;
 
 gotIt.addEventListener('click', startGame);
@@ -35,6 +36,7 @@ force.innerHTML = `Gravitational force : ${displaySpeed}N`
 
 
 window.setInterval(function () {
+    if (timeIG > 5 && timeIG < 9) score = 0;
     if (!losingVerif && play) timeIG += 0.01;
     timePlaceholder.innerHTML = `Traveling time: ${timeIG.toFixed(2)}s`
 }, 10)
@@ -167,9 +169,11 @@ function passingVerif() {
         if (rings[i].theRing.position.z < camera.position.z && rings[i].theRing.position.z > camera.position.z - passingThresh) {
             if (camera.position.x > rings[i].theRing.position.x - 0.9 && camera.position.x < rings[i].theRing.position.x + 0.9) {
                 if (camera.position.y > rings[i].theRing.position.y - 0.9 && camera.position.y < rings[i].theRing.position.y + 0.9) {
+                    if (!started) { score = 0; }
                     score++;
                     scoreHolder.innerHTML = score;
                     passedRing.play();
+                    started = true
                     if (score % 10 === 0) {
                         ringSpeed *= 1.05;
                         displaySpeed = (ringSpeed * 1000).toFixed(2);

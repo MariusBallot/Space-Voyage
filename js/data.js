@@ -6,7 +6,7 @@ playerForm.addEventListener('submit', (e) => {
     e.preventDefault();
     db.collection('players').add({
         name: playerForm.name.value,
-        gates: score,
+        gates: fScore,
         time: timeIG.toFixed(2),
         force: displaySpeed
     });
