@@ -50,10 +50,8 @@ h1 {
 }
 
 .board {
-    width: 100%;
+    width: 50%;
     position: absolute;
-    padding: 0 20px;
-    box-sizing: border-box;
 }
 
 .board p {
@@ -118,12 +116,12 @@ button {
     cursor: pointer;
 }
 
+button.mobile {
+    display: none;
+}
+
 .board .buttons {
     margin-top: 20px;
     display: flex;
-    justify-content: center;
-}
-
-.board .buttons button:nth-child(1), .board .buttons button:nth-child(2), .board .buttons :nth-child(3) {
-    display: none;
+    justify-content: space-between;
 }
