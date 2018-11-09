@@ -1,4 +1,3 @@
-
 //VARIABLE SETUP ****************************************************************
 let scene, camera, started, fScore, renderer, movingSpeed, impact, passedRing, speedUp, gotIt, xpos, ypos, score, scoreHolder, play, ringSpeed, passingThresh, earth, losingVerif, displaySpeed, backMusic, force, timePlaceholder, timeIG;
 scoreHolder = document.querySelector('h2.score')
@@ -99,6 +98,7 @@ function cameraMovingStart() {
 
 function startGame() {
     play = true;
+    document.querySelector('#mobileTouch').classList.add('on')
     document.querySelector('.instructions').classList.add('off')
     backMusic.play();
     interfaceToggle();
@@ -232,85 +232,53 @@ function onWindowResize() {
 //CONTROLS ***********************************************************************
 //CONTROLS ***********************************************************************
 
-document.onkeydown = checkKey;
+let touches = document.querySelectorAll('#mobileTouch div');
 
-function checkKey(e) {
-
-    e = e || window.event;
-
-    if (e.keyCode == '38' && !losingVerif) {
-        // up arrow
-        ypos += movingSpeed;
-        TweenLite.to(camera.position, 0.1, {
-            y: ypos,
-            ease: Power0.easeNone
-        });
-
-    }
-    else if (e.keyCode == '40' && !losingVerif) {
-        // down arrow
-        ypos -= movingSpeed;
-        TweenLite.to(camera.position, 0.1, {
-            y: ypos,
-            ease: Power0.easeNone
-        });
-
-    }
-    else if (e.keyCode == '37') {
-        // left arrow
-        xpos += movingSpeed;
-        TweenLite.to(camera.position, 0.1, {
-            x: xpos,
-            ease: Power0.easeNone
-        });
-
-    }
-    else if (e.keyCode == '39') {
-        // right arrow
-        xpos -= movingSpeed;
-        TweenLite.to(camera.position, 0.1, {
-            x: xpos,
-            ease: Power0.easeNone
-        });
-
-    }
-    if (e.keyCode == '90' && !losingVerif) {
-        // up arrow
-        ypos += movingSpeed;
-        TweenLite.to(camera.position, 0.1, {
-            y: ypos,
-            ease: Power0.easeNone
-        });
-
-    }
-    else if (e.keyCode == '83' && !losingVerif) {
-        // down arrow
-        ypos -= movingSpeed;
-        TweenLite.to(camera.position, 0.1, {
-            y: ypos,
-            ease: Power0.easeNone
-        });
-
-    }
-    else if (e.keyCode == '81') {
-        // left arrow
-        xpos += movingSpeed;
-        TweenLite.to(camera.position, 0.1, {
-            x: xpos,
-            ease: Power0.easeNone
-        });
-
-    }
-    else if (e.keyCode == '68') {
-        // right arrow
-        xpos -= movingSpeed;
-        TweenLite.to(camera.position, 0.1, {
-            x: xpos,
-            ease: Power0.easeNone
-        });
-    }
-
+for (let i = 0; i < touches.length; i++) {
+    touches[i].addEventListener('click', camControle);
 }
+
+function camControle() {
+    if (this.classList == 'touchTop') {
+        // up arrow
+        ypos += movingSpeed;
+        TweenLite.to(camera.position, 0.1, {
+            y: ypos,
+            ease: Power0.easeNone
+        });
+
+    }
+    else if (this.classList == 'touchBottom') {
+        // down arrow
+        console.log('okpe')
+        ypos -= movingSpeed;
+        TweenLite.to(camera.position, 0.1, {
+            y: ypos,
+            ease: Power0.easeNone
+        });
+
+    }
+    else if (this.classList == 'touchLeft') {
+        // left arrow
+        xpos += movingSpeed;
+        TweenLite.to(camera.position, 0.1, {
+            x: xpos,
+            ease: Power0.easeNone
+        });
+
+    }
+    else if (this.classList == 'touchRight') {
+        // right arrow
+        xpos -= movingSpeed;
+        TweenLite.to(camera.position, 0.1, {
+            x: xpos,
+            ease: Power0.easeNone
+        });
+
+    }
+}
+
+
 
 
 

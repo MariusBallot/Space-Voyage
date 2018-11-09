@@ -19,6 +19,55 @@ p {
   z-index: 0;
 }
 
+#mobileTouch {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+#mobileTouch div {
+  position: absolute;
+  /* background: rgba(255, 255, 255, 0.3); */
+}
+
+#mobileTouch.on {
+  pointer-events: all;
+}
+
+#mobileTouch .touchTop, #mobileTouch .touchBottom {
+  width: 100vw;
+  height: 20%;
+}
+
+#mobileTouch .touchTop {
+  top: 0;
+  left: 0;
+}
+
+#mobileTouch .touchBottom {
+  bottom: 0;
+  left: 0;
+}
+
+#mobileTouch .touchLeft, #mobileTouch .touchRight {
+  width: 30%;
+  height: 100vh;
+}
+
+#mobileTouch .touchLeft {
+  top: 0;
+  left: 0;
+}
+
+#mobileTouch .touchRight {
+  top: 0;
+  right: 0;
+}
+
 h1 {
   text-transform: uppercase;
   letter-spacing: 10px;
