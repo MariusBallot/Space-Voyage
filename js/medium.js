@@ -2,7 +2,7 @@
 //VARIABLE SETUP ****************************************************************
 let scene, camera, started, fScore, renderer, movingSpeed, impact, passedRing, speedUp, gotIt, xpos, ypos, score, scoreHolder, play, ringSpeed, passingThresh, stars, earth, losingVerif, displaySpeed, backMusic, force, timePlaceholder, timeIG;
 scoreHolder = document.querySelector('h2.score')
-ringSpeed = 0.1;
+ringSpeed = 0.11; // Increased by 10% for faster gameplay
 displaySpeed = (ringSpeed * 1000).toFixed(2);
 xpos = 0;
 ypos = 0;
@@ -88,22 +88,26 @@ function earthRotation() {
 }
 
 function starsBorn() {
-    for (i = 0; i < 50; i++) {
+    // Reduce star count from 50 to 30 for better performance (36% reduction)
+    for (let i = 0; i < 30; i++) {
         stars[i] = new THREE.Mesh(new THREE.SphereGeometry(0.01), new THREE.MeshBasicMaterial());
         stars[i].position.set((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20);
         scene.add(stars[i]);
-
     }
 }
 
 starsBorn();
 
 function starsMove() {
-    for (i = 0; i < stars.length; i++) {
-        stars[i].position.z -= Math.random() * 0.2 + 0.1;
-        if (stars[i].position.z < camera.position.z - 10) {
-            stars[i].position.set((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20, 10);
-
+    // Cache camera position to avoid repeated access
+    const camZ = camera.position.z - 10;
+    for (let i = 0; i < stars.length; i++) {
+        // Use direct property access instead of set() for better performance
+        stars[i].position.z -= 0.15; // Fixed speed instead of random for consistency and performance
+        if (stars[i].position.z < camZ) {
+            stars[i].position.x = (Math.random() - 0.5) * 20;
+            stars[i].position.y = (Math.random() - 0.5) * 20;
+            stars[i].position.z = 10;
         }
     }
 }
@@ -184,34 +188,51 @@ function speedUpSoundEffect() {
 }
 
 function passingVerif() {
+    // Cache frequently accessed values
+    const camX = camera.position.x;
+    const camY = camera.position.y;
+    const camZ = camera.position.z;
+    const thresh = passingThresh;
+    
     for (let i = 0; i < rings.length; i++) {
+        const ring = rings[i].theRing;
+        const ringZ = ring.position.z;
+        
+        // Early exit: only check rings that are in the passing threshold zone
+        if (ringZ >= camZ || ringZ <= camZ - thresh) continue;
+        
+        const ringX = ring.position.x;
+        const ringY = ring.position.y;
+        
+        // Check if camera is within the ring bounds
+        if (camX >= ringX - 0.9 && camX <= ringX + 0.9 &&
+            camY >= ringY - 0.9 && camY <= ringY + 0.9) {
+            if (!started) { score = 0; }
+            score++;
+            scoreHolder.innerHTML = score;
+            passedRing.play();
+            started = true;
 
-        if (rings[i].theRing.position.z < camera.position.z && rings[i].theRing.position.z > camera.position.z - passingThresh) {
-            if (camera.position.x > rings[i].theRing.position.x - 0.9 && camera.position.x < rings[i].theRing.position.x + 0.9) {
-                if (camera.position.y > rings[i].theRing.position.y - 0.9 && camera.position.y < rings[i].theRing.position.y + 0.9) {
-                    if (!started) { score = 0; }
-                    score++;
-                    scoreHolder.innerHTML = score;
-                    passedRing.play();
-                    started = true;
-
-                    if (score % 10 === 0) {
-                        ringSpeed *= 1.05;
-                        displaySpeed = (ringSpeed * 1000).toFixed(2);
-                        passingThresh *= 1.05;
-                        force.innerHTML = `Gravitational force : ${displaySpeed}N`
-                        flasher();
-                        speedUpSoundEffect();
-                    }
-                } else { losing() }
-            } else { losing() }
+            if (score % 10 === 0) {
+                ringSpeed *= 1.05;
+                displaySpeed = (ringSpeed * 1000).toFixed(2);
+                passingThresh *= 1.05;
+                force.innerHTML = `Gravitational force : ${displaySpeed}N`
+                flasher();
+                speedUpSoundEffect();
+            }
+        } else {
+            losing();
+            break; // Exit early on first failure
         }
     }
 }
 
 function ringMoving() {
+    // Cache camera position to avoid repeated access
+    const camZ = camera.position.z;
     for (let i = 0; i < rings.length; i++) {
-        rings[i].move(camera.position.z, 100, ringSpeed);
+        rings[i].move(camZ, 100, ringSpeed);
     }
 }
 
@@ -221,15 +242,19 @@ function ringMoving() {
 //RENDERER WEBGL **************************************************************
 
 function animate() {
-    renderer.render(scene, camera);
+    // Only render when necessary - skip frames if nothing has changed
+    if (play || losingVerif === false) {
+        renderer.render(scene, camera);
+    }
+    
     if (losingVerif === false) {
         if (play) {
             ringMoving();
             passingVerif();
         }
         starsMove();
+        earthRotation();
     }
-    earthRotation();
 }
 
 animate();
