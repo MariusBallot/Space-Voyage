@@ -1,9 +1,12 @@
 """Unit tests for the ticket router workflow."""
 
+import http
 import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
+from mistralai.workflows.exceptions import ErrorCode, WorkflowsException
 
 from worker.workflows.ticket_router import (
     TicketInput,
@@ -159,28 +162,48 @@ def test_ticket_input_validation_valid():
     assert input_data.body == "Test body"
 
 
-def test_ticket_input_validation_empty_subject():
-    """Test that TicketInput rejects empty subject."""
-    with pytest.raises(ValueError, match="subject and body must not be empty or whitespace-only"):
-        TicketInput(subject="", body="Test body")
+@pytest.mark.asyncio
+async def test_workflow_validation_empty_subject():
+    """Test that workflow rejects empty subject with WorkflowsException."""
+    workflow = TicketRouterWorkflow()
+    with pytest.raises(WorkflowsException) as exc_info:
+        await workflow.run(TicketInput(subject="", body="Test body"))
+    assert exc_info.value.code == ErrorCode.INVALID_ARGUMENTS_ERROR
+    assert exc_info.value.status == http.HTTPStatus.BAD_REQUEST
+    assert "subject must not be empty or whitespace-only" in exc_info.value.message
 
 
-def test_ticket_input_validation_empty_body():
-    """Test that TicketInput rejects empty body."""
-    with pytest.raises(ValueError, match="subject and body must not be empty or whitespace-only"):
-        TicketInput(subject="Test", body="")
+@pytest.mark.asyncio
+async def test_workflow_validation_empty_body():
+    """Test that workflow rejects empty body with WorkflowsException."""
+    workflow = TicketRouterWorkflow()
+    with pytest.raises(WorkflowsException) as exc_info:
+        await workflow.run(TicketInput(subject="Test", body=""))
+    assert exc_info.value.code == ErrorCode.INVALID_ARGUMENTS_ERROR
+    assert exc_info.value.status == http.HTTPStatus.BAD_REQUEST
+    assert "body must not be empty or whitespace-only" in exc_info.value.message
 
 
-def test_ticket_input_validation_whitespace_only():
-    """Test that TicketInput rejects whitespace-only inputs."""
-    with pytest.raises(ValueError, match="subject and body must not be empty or whitespace-only"):
-        TicketInput(subject="   ", body="   ")
+@pytest.mark.asyncio
+async def test_workflow_validation_whitespace_only():
+    """Test that workflow rejects whitespace-only inputs with WorkflowsException."""
+    workflow = TicketRouterWorkflow()
+    with pytest.raises(WorkflowsException) as exc_info:
+        await workflow.run(TicketInput(subject="   ", body="   "))
+    assert exc_info.value.code == ErrorCode.INVALID_ARGUMENTS_ERROR
+    assert exc_info.value.status == http.HTTPStatus.BAD_REQUEST
+    assert "subject must not be empty or whitespace-only" in exc_info.value.message
 
 
-def test_ticket_input_validation_both_empty():
-    """Test that TicketInput rejects both empty."""
-    with pytest.raises(ValueError, match="subject and body must not be empty or whitespace-only"):
-        TicketInput(subject="", body="")
+@pytest.mark.asyncio
+async def test_workflow_validation_both_empty():
+    """Test that workflow rejects both empty with WorkflowsException."""
+    workflow = TicketRouterWorkflow()
+    with pytest.raises(WorkflowsException) as exc_info:
+        await workflow.run(TicketInput(subject="", body=""))
+    assert exc_info.value.code == ErrorCode.INVALID_ARGUMENTS_ERROR
+    assert exc_info.value.status == http.HTTPStatus.BAD_REQUEST
+    assert "subject must not be empty or whitespace-only" in exc_info.value.message
 
 
 def test_routing_decision_model_valid():

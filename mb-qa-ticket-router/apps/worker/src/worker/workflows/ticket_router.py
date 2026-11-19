@@ -1,10 +1,12 @@
 """Support ticket classification and routing workflow."""
 
+import http
 from typing import Literal
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel
 
 import mistralai.workflows as workflows
+from mistralai.workflows.exceptions import ErrorCode, WorkflowsException
 
 # Allowed values for classification
 CategoryType = Literal["bug", "billing", "feature request", "other"]
@@ -17,13 +19,6 @@ class TicketInput(BaseModel):
 
     subject: str
     body: str
-
-    @field_validator("subject", "body")
-    @classmethod
-    def validate_not_empty(cls, v: str) -> str:
-        if not v or not v.strip():
-            raise ValueError("subject and body must not be empty or whitespace-only")
-        return v
 
 
 class RoutingDecision(BaseModel):
@@ -139,4 +134,17 @@ class TicketRouterWorkflow:
     @workflows.workflow.entrypoint
     async def run(self, input: TicketInput) -> RoutingDecision:
         """Route a support ticket by classifying it and determining the appropriate team."""
+        # Validate input - raise WorkflowsException for non-retryable validation errors
+        if not input.subject or not input.subject.strip():
+            raise WorkflowsException(
+                code=ErrorCode.INVALID_ARGUMENTS_ERROR,
+                message="subject must not be empty or whitespace-only",
+                status=http.HTTPStatus.BAD_REQUEST,
+            )
+        if not input.body or not input.body.strip():
+            raise WorkflowsException(
+                code=ErrorCode.INVALID_ARGUMENTS_ERROR,
+                message="body must not be empty or whitespace-only",
+                status=http.HTTPStatus.BAD_REQUEST,
+            )
         return await classify_ticket(input.subject, input.body)
