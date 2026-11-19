@@ -1,3 +1,3 @@
 # Race target
 
-status: base
+status: edited by the other writer
