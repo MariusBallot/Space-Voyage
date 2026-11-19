@@ -8,33 +8,17 @@ needs only ``pydantic-settings`` and ``python-dotenv``.
 """
 
 import os
-from pathlib import Path
 from typing import Any
 
-from dotenv import load_dotenv
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, EnvSettingsSource, PydanticBaseSettingsSource, SettingsConfigDict
 
 from env._mistral_secrets import MistralSecretsSettingsSource
 
 
-def _find_repo_root() -> Path:
-    # Temporal workflow sandbox restricts Path.resolve() - use cwd as fallback
-    try:
-        for parent in Path(__file__).resolve().parents:
-            if (parent / "package.json").is_file() and (parent / "pyproject.toml").is_file():
-                return parent
-    except Exception:
-        # In Temporal sandbox, Path.resolve() may be restricted
-        pass
-    return Path.cwd()
-
-
-_ROOT_ENV_PATH = _find_repo_root() / ".env"
-
-# Only load .env if the file exists - in deployed workers it doesn't
-if _ROOT_ENV_PATH.is_file():
-    load_dotenv(dotenv_path=_ROOT_ENV_PATH, override=False)
+# Skip .env loading in Temporal sandbox / deployed workers
+# The .env file is excluded by .dockerignore and not present in images
+# Environment variables are injected by the platform or set manually for local dev
 
 
 class BaseEnv(BaseSettings):
