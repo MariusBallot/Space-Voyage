@@ -34,7 +34,7 @@ async def test_classify_ticket_bug():
     mock_client = MagicMock()
     mock_client.chat.complete = AsyncMock(return_value=mock_response)
     
-    with patch('worker.workflows.ticket_router.get_mistral_client', return_value=mock_client):
+    with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
             subject="Login not working",
             body="Users cannot login to the application"
@@ -67,7 +67,7 @@ async def test_classify_ticket_billing():
     mock_client = MagicMock()
     mock_client.chat.complete = AsyncMock(return_value=mock_response)
     
-    with patch('worker.workflows.ticket_router.get_mistral_client', return_value=mock_client):
+    with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
             subject="Invoice question",
             body="My invoice shows $500 but I only have 10 users"
@@ -98,7 +98,7 @@ async def test_classify_ticket_feature_request():
     mock_client = MagicMock()
     mock_client.chat.complete = AsyncMock(return_value=mock_response)
     
-    with patch('worker.workflows.ticket_router.get_mistral_client', return_value=mock_client):
+    with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
             subject="Dark mode request",
             body="Please add dark mode to the dashboard"
@@ -129,7 +129,7 @@ async def test_classify_ticket_other():
     mock_client = MagicMock()
     mock_client.chat.complete = AsyncMock(return_value=mock_response)
     
-    with patch('worker.workflows.ticket_router.get_mistral_client', return_value=mock_client):
+    with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
             subject="How to reset password",
             body="I forgot my password"
@@ -160,7 +160,7 @@ async def test_classify_ticket_urgent():
     mock_client = MagicMock()
     mock_client.chat.complete = AsyncMock(return_value=mock_response)
     
-    with patch('worker.workflows.ticket_router.get_mistral_client', return_value=mock_client):
+    with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
             subject="Security issue",
             body="Potential SQL injection vulnerability"
@@ -186,7 +186,7 @@ async def test_classify_ticket_with_markdown():
     mock_client = MagicMock()
     mock_client.chat.complete = AsyncMock(return_value=mock_response)
     
-    with patch('worker.workflows.ticket_router.get_mistral_client', return_value=mock_client):
+    with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
             subject="Test",
             body="Test ticket"

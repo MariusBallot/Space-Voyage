@@ -3,7 +3,6 @@
 from pydantic import BaseModel
 
 import mistralai.workflows as workflows
-from utils.mistral import mistral_client
 
 
 class TicketInput(BaseModel):
@@ -34,6 +33,9 @@ async def classify_ticket(subject: str, body: str) -> RoutingDecision:
     """
     import json
     import os
+    
+    # Import here to avoid sandbox restriction during module import
+    from utils.mistral import mistral_client
     
     # Get Mistral client, using SERVER_URL if set (platform-injected)
     server_url = os.environ.get("SERVER_URL")
