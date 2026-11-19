@@ -1,3 +1,3 @@
 # Race target
 
-status: round two by session
+status: round three by the other writer
