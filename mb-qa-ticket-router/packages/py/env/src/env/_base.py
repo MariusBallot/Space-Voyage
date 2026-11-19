@@ -23,7 +23,7 @@ from env._mistral_secrets import MistralSecretsSettingsSource
 
 class BaseEnv(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=str(_ROOT_ENV_PATH),
+        env_file=None,  # No .env file - use environment variables only
         env_file_encoding="utf-8",
         extra="ignore",
         case_sensitive=False,
