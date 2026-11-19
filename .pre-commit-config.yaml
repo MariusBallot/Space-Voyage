@@ -1,0 +1,10 @@
+repos:
+  - repo: local
+    hooks:
+      - id: space-lint
+        name: space-lint (asset and style checks)
+        entry: sh -c 'echo "space-lint: command not found. Install the internal space-lint tool before committing to Space-Voyage."; exit 1'
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit, pre-push]
