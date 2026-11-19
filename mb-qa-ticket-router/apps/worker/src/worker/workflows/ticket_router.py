@@ -3,7 +3,7 @@
 from pydantic import BaseModel
 
 import mistralai.workflows as workflows
-from mistralai.workflows.plugins.mistralai import get_mistral_client
+from utils.mistral import mistral_client
 
 
 class TicketInput(BaseModel):
@@ -33,9 +33,11 @@ async def classify_ticket(subject: str, body: str) -> RoutingDecision:
     - Reason: one-sentence explanation
     """
     import json
+    import os
     
-    # Get Mistral client from the plugin (handles auth, telemetry, etc.)
-    client = get_mistral_client()
+    # Get Mistral client, using SERVER_URL if set (platform-injected)
+    server_url = os.environ.get("SERVER_URL")
+    client = mistral_client(server_url=server_url)
     
     prompt = f"""You are a support ticket classification and routing assistant.
 

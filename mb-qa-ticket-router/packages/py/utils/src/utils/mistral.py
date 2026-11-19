@@ -147,8 +147,11 @@ def mistral_client(*, server_url: str | None = None, retry_config: OptionalNulla
     hook raise on that call instead, and the SDK would fall back to reading ``MISTRAL_API_KEY`` itself.
     A token file that is set but cannot be read raises :class:`MistralNotConfiguredError` on each call.
     """
+    import os
+    # Use SERVER_URL if explicitly passed, otherwise check env, then env.mistral_base_url, then default
+    effective_url = server_url or os.environ.get("SERVER_URL") or env.mistral_base_url
     return _new_client(
-        _app_credential() or "", env.mistral_base_url if server_url is None else server_url, retry_config
+        _app_credential() or "", effective_url, retry_config
     )
 
 
