@@ -24,7 +24,13 @@ def _find_repo_root() -> Path:
     return Path.cwd()
 
 
-_ROOT_ENV_PATH = _find_repo_root() / ".env"
+# Temporal workflow sandbox restricts Path.resolve() - mark as pass-through
+try:
+    import mistralai.workflows as _wf
+    with _wf.unsafe.imports_passed_through():
+        _ROOT_ENV_PATH = _find_repo_root() / ".env"
+except ImportError:
+    _ROOT_ENV_PATH = _find_repo_root() / ".env"
 
 load_dotenv(dotenv_path=_ROOT_ENV_PATH, override=False)
 
