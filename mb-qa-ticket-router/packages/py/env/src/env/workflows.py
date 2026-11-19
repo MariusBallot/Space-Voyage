@@ -1,3 +1,5 @@
+import os
+
 from env._base import BaseEnv
 
 
@@ -7,3 +9,7 @@ class Env(BaseEnv):
 
 
 env = Env()
+
+# Override workflows_base_url with SERVER_URL if set (platform-injected)
+if os.environ.get("SERVER_URL"):
+    env.workflows_base_url = os.environ["SERVER_URL"]
