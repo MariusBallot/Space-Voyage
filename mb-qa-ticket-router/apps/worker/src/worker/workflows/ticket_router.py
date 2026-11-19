@@ -4,9 +4,9 @@ import http
 from typing import Literal
 
 from pydantic import BaseModel
+from temporalio.exceptions import ApplicationError
 
 import mistralai.workflows as workflows
-from mistralai.workflows.exceptions import ErrorCode, WorkflowsException
 
 # Allowed values for classification
 CategoryType = Literal["bug", "billing", "feature request", "other"]
@@ -134,17 +134,17 @@ class TicketRouterWorkflow:
     @workflows.workflow.entrypoint
     async def run(self, input: TicketInput) -> RoutingDecision:
         """Route a support ticket by classifying it and determining the appropriate team."""
-        # Validate input - raise WorkflowsException for non-retryable validation errors
+        # Validate input - raise non-retryable ApplicationError for validation errors
         if not input.subject or not input.subject.strip():
-            raise WorkflowsException(
-                code=ErrorCode.INVALID_ARGUMENTS_ERROR,
+            raise ApplicationError(
                 message="subject must not be empty or whitespace-only",
-                status=http.HTTPStatus.BAD_REQUEST,
+                type="invalid_arguments_error",
+                non_retryable=True,
             )
         if not input.body or not input.body.strip():
-            raise WorkflowsException(
-                code=ErrorCode.INVALID_ARGUMENTS_ERROR,
+            raise ApplicationError(
                 message="body must not be empty or whitespace-only",
-                status=http.HTTPStatus.BAD_REQUEST,
+                type="invalid_arguments_error",
+                non_retryable=True,
             )
         return await classify_ticket(input.subject, input.body)

@@ -1,12 +1,10 @@
 """Unit tests for the ticket router workflow."""
 
-import http
 import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
-from mistralai.workflows.exceptions import ErrorCode, WorkflowsException
+from temporalio.exceptions import ApplicationError
 
 from worker.workflows.ticket_router import (
     TicketInput,
@@ -164,45 +162,45 @@ def test_ticket_input_validation_valid():
 
 @pytest.mark.asyncio
 async def test_workflow_validation_empty_subject():
-    """Test that workflow rejects empty subject with WorkflowsException."""
+    """Test that workflow rejects empty subject with non-retryable ApplicationError."""
     workflow = TicketRouterWorkflow()
-    with pytest.raises(WorkflowsException) as exc_info:
+    with pytest.raises(ApplicationError) as exc_info:
         await workflow.run(TicketInput(subject="", body="Test body"))
-    assert exc_info.value.code == ErrorCode.INVALID_ARGUMENTS_ERROR
-    assert exc_info.value.status == http.HTTPStatus.BAD_REQUEST
+    assert exc_info.value.non_retryable is True
+    assert exc_info.value.type == "invalid_arguments_error"
     assert "subject must not be empty or whitespace-only" in exc_info.value.message
 
 
 @pytest.mark.asyncio
 async def test_workflow_validation_empty_body():
-    """Test that workflow rejects empty body with WorkflowsException."""
+    """Test that workflow rejects empty body with non-retryable ApplicationError."""
     workflow = TicketRouterWorkflow()
-    with pytest.raises(WorkflowsException) as exc_info:
+    with pytest.raises(ApplicationError) as exc_info:
         await workflow.run(TicketInput(subject="Test", body=""))
-    assert exc_info.value.code == ErrorCode.INVALID_ARGUMENTS_ERROR
-    assert exc_info.value.status == http.HTTPStatus.BAD_REQUEST
+    assert exc_info.value.non_retryable is True
+    assert exc_info.value.type == "invalid_arguments_error"
     assert "body must not be empty or whitespace-only" in exc_info.value.message
 
 
 @pytest.mark.asyncio
 async def test_workflow_validation_whitespace_only():
-    """Test that workflow rejects whitespace-only inputs with WorkflowsException."""
+    """Test that workflow rejects whitespace-only inputs with non-retryable ApplicationError."""
     workflow = TicketRouterWorkflow()
-    with pytest.raises(WorkflowsException) as exc_info:
+    with pytest.raises(ApplicationError) as exc_info:
         await workflow.run(TicketInput(subject="   ", body="   "))
-    assert exc_info.value.code == ErrorCode.INVALID_ARGUMENTS_ERROR
-    assert exc_info.value.status == http.HTTPStatus.BAD_REQUEST
+    assert exc_info.value.non_retryable is True
+    assert exc_info.value.type == "invalid_arguments_error"
     assert "subject must not be empty or whitespace-only" in exc_info.value.message
 
 
 @pytest.mark.asyncio
 async def test_workflow_validation_both_empty():
-    """Test that workflow rejects both empty with WorkflowsException."""
+    """Test that workflow rejects both empty with non-retryable ApplicationError."""
     workflow = TicketRouterWorkflow()
-    with pytest.raises(WorkflowsException) as exc_info:
+    with pytest.raises(ApplicationError) as exc_info:
         await workflow.run(TicketInput(subject="", body=""))
-    assert exc_info.value.code == ErrorCode.INVALID_ARGUMENTS_ERROR
-    assert exc_info.value.status == http.HTTPStatus.BAD_REQUEST
+    assert exc_info.value.non_retryable is True
+    assert exc_info.value.type == "invalid_arguments_error"
     assert "subject must not be empty or whitespace-only" in exc_info.value.message
 
 
