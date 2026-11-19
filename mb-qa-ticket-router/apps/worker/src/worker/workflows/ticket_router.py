@@ -1,8 +1,15 @@
 """Support ticket classification and routing workflow."""
 
-from pydantic import BaseModel
+from typing import Literal
+
+from pydantic import BaseModel, field_validator
 
 import mistralai.workflows as workflows
+
+# Allowed values for classification
+CategoryType = Literal["bug", "billing", "feature request", "other"]
+PriorityType = Literal["low", "medium", "high", "urgent"]
+TeamQueueType = Literal["engineering", "billing", "product", "support"]
 
 
 class TicketInput(BaseModel):
@@ -11,13 +18,20 @@ class TicketInput(BaseModel):
     subject: str
     body: str
 
+    @field_validator("subject", "body")
+    @classmethod
+    def validate_not_empty(cls, v: str) -> str:
+        if not v or not v.strip():
+            raise ValueError("subject and body must not be empty or whitespace-only")
+        return v
+
 
 class RoutingDecision(BaseModel):
     """Output routing decision for a support ticket."""
 
-    category: str
-    priority: str
-    team_queue: str
+    category: CategoryType
+    priority: PriorityType
+    team_queue: TeamQueueType
     reason: str
 
 
@@ -76,7 +90,7 @@ Respond with a JSON object containing exactly these fields:
 
 Respond ONLY with the valid JSON object. Do not include any other text, markdown, or explanations."""
 
-    response = await client.chat.complete(
+    response = await client.chat.complete_async(
         model="mistral-medium-latest",
         messages=[
             {

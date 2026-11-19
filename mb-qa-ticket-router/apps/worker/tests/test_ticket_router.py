@@ -13,17 +13,10 @@ from worker.workflows.ticket_router import (
 )
 
 
-@pytest.mark.asyncio
-async def test_classify_ticket_bug():
-    """Test classification of a bug ticket."""
-    # Mock the response from the Mistral model
+def _make_mock_client(response_content: str):
+    """Helper to create a mock client with complete_async returning a response."""
     mock_message = MagicMock()
-    mock_message.content = json.dumps({
-        "category": "bug",
-        "priority": "high",
-        "team_queue": "engineering",
-        "reason": "Login failure affects authentication"
-    })
+    mock_message.content = response_content
     
     mock_choice = MagicMock()
     mock_choice.message = mock_message
@@ -32,7 +25,19 @@ async def test_classify_ticket_bug():
     mock_response.choices = [mock_choice]
     
     mock_client = MagicMock()
-    mock_client.chat.complete = AsyncMock(return_value=mock_response)
+    mock_client.chat.complete_async = AsyncMock(return_value=mock_response)
+    return mock_client
+
+
+@pytest.mark.asyncio
+async def test_classify_ticket_bug():
+    """Test classification of a bug ticket."""
+    mock_client = _make_mock_client(json.dumps({
+        "category": "bug",
+        "priority": "high",
+        "team_queue": "engineering",
+        "reason": "Login failure affects authentication"
+    }))
     
     with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
@@ -50,22 +55,12 @@ async def test_classify_ticket_bug():
 @pytest.mark.asyncio
 async def test_classify_ticket_billing():
     """Test classification of a billing ticket."""
-    mock_message = MagicMock()
-    mock_message.content = json.dumps({
+    mock_client = _make_mock_client(json.dumps({
         "category": "billing",
         "priority": "medium",
         "team_queue": "billing",
         "reason": "Invoice discrepancy"
-    })
-    
-    mock_choice = MagicMock()
-    mock_choice.message = mock_message
-    
-    mock_response = MagicMock()
-    mock_response.choices = [mock_choice]
-    
-    mock_client = MagicMock()
-    mock_client.chat.complete = AsyncMock(return_value=mock_response)
+    }))
     
     with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
@@ -81,22 +76,12 @@ async def test_classify_ticket_billing():
 @pytest.mark.asyncio
 async def test_classify_ticket_feature_request():
     """Test classification of a feature request ticket."""
-    mock_message = MagicMock()
-    mock_message.content = json.dumps({
+    mock_client = _make_mock_client(json.dumps({
         "category": "feature request",
         "priority": "low",
         "team_queue": "product",
         "reason": "UI enhancement request"
-    })
-    
-    mock_choice = MagicMock()
-    mock_choice.message = mock_message
-    
-    mock_response = MagicMock()
-    mock_response.choices = [mock_choice]
-    
-    mock_client = MagicMock()
-    mock_client.chat.complete = AsyncMock(return_value=mock_response)
+    }))
     
     with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
@@ -112,22 +97,12 @@ async def test_classify_ticket_feature_request():
 @pytest.mark.asyncio
 async def test_classify_ticket_other():
     """Test classification of an other ticket."""
-    mock_message = MagicMock()
-    mock_message.content = json.dumps({
+    mock_client = _make_mock_client(json.dumps({
         "category": "other",
         "priority": "low",
         "team_queue": "support",
         "reason": "General support question"
-    })
-    
-    mock_choice = MagicMock()
-    mock_choice.message = mock_message
-    
-    mock_response = MagicMock()
-    mock_response.choices = [mock_choice]
-    
-    mock_client = MagicMock()
-    mock_client.chat.complete = AsyncMock(return_value=mock_response)
+    }))
     
     with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
@@ -143,22 +118,12 @@ async def test_classify_ticket_other():
 @pytest.mark.asyncio
 async def test_classify_ticket_urgent():
     """Test classification of an urgent ticket."""
-    mock_message = MagicMock()
-    mock_message.content = json.dumps({
+    mock_client = _make_mock_client(json.dumps({
         "category": "bug",
         "priority": "urgent",
         "team_queue": "engineering",
         "reason": "Security vulnerability"
-    })
-    
-    mock_choice = MagicMock()
-    mock_choice.message = mock_message
-    
-    mock_response = MagicMock()
-    mock_response.choices = [mock_choice]
-    
-    mock_client = MagicMock()
-    mock_client.chat.complete = AsyncMock(return_value=mock_response)
+    }))
     
     with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
@@ -173,18 +138,9 @@ async def test_classify_ticket_urgent():
 @pytest.mark.asyncio
 async def test_classify_ticket_with_markdown():
     """Test classification when response has markdown code blocks."""
-    mock_message = MagicMock()
-    # Response wrapped in markdown code blocks
-    mock_message.content = '```json\n{"category": "bug", "priority": "high", "team_queue": "engineering", "reason": "Test"}\n```'
-    
-    mock_choice = MagicMock()
-    mock_choice.message = mock_message
-    
-    mock_response = MagicMock()
-    mock_response.choices = [mock_choice]
-    
-    mock_client = MagicMock()
-    mock_client.chat.complete = AsyncMock(return_value=mock_response)
+    mock_client = _make_mock_client(
+        '```json\n{"category": "bug", "priority": "high", "team_queue": "engineering", "reason": "Test"}\n```'
+    )
     
     with patch('utils.mistral.mistral_client', return_value=mock_client):
         result = await classify_ticket(
@@ -196,20 +152,39 @@ async def test_classify_ticket_with_markdown():
     assert result.priority == "high"
 
 
-def test_ticket_input_validation():
-    """Test that TicketInput validates correctly."""
-    # Valid input
+def test_ticket_input_validation_valid():
+    """Test that TicketInput accepts valid inputs."""
     input_data = TicketInput(subject="Test", body="Test body")
     assert input_data.subject == "Test"
     assert input_data.body == "Test body"
-    
-    # Missing fields should raise ValidationError
-    with pytest.raises(Exception):  # Pydantic ValidationError
-        TicketInput()
 
 
-def test_routing_decision_model():
-    """Test that RoutingDecision model works correctly."""
+def test_ticket_input_validation_empty_subject():
+    """Test that TicketInput rejects empty subject."""
+    with pytest.raises(ValueError, match="subject and body must not be empty or whitespace-only"):
+        TicketInput(subject="", body="Test body")
+
+
+def test_ticket_input_validation_empty_body():
+    """Test that TicketInput rejects empty body."""
+    with pytest.raises(ValueError, match="subject and body must not be empty or whitespace-only"):
+        TicketInput(subject="Test", body="")
+
+
+def test_ticket_input_validation_whitespace_only():
+    """Test that TicketInput rejects whitespace-only inputs."""
+    with pytest.raises(ValueError, match="subject and body must not be empty or whitespace-only"):
+        TicketInput(subject="   ", body="   ")
+
+
+def test_ticket_input_validation_both_empty():
+    """Test that TicketInput rejects both empty."""
+    with pytest.raises(ValueError, match="subject and body must not be empty or whitespace-only"):
+        TicketInput(subject="", body="")
+
+
+def test_routing_decision_model_valid():
+    """Test that RoutingDecision accepts valid values."""
     decision = RoutingDecision(
         category="bug",
         priority="high",
@@ -220,3 +195,36 @@ def test_routing_decision_model():
     assert decision.priority == "high"
     assert decision.team_queue == "engineering"
     assert decision.reason == "Test reason"
+
+
+def test_routing_decision_model_invalid_category():
+    """Test that RoutingDecision rejects invalid category."""
+    with pytest.raises(ValueError):
+        RoutingDecision(
+            category="invalid",
+            priority="high",
+            team_queue="engineering",
+            reason="Test"
+        )
+
+
+def test_routing_decision_model_invalid_priority():
+    """Test that RoutingDecision rejects invalid priority."""
+    with pytest.raises(ValueError):
+        RoutingDecision(
+            category="bug",
+            priority="invalid",
+            team_queue="engineering",
+            reason="Test"
+        )
+
+
+def test_routing_decision_model_invalid_team_queue():
+    """Test that RoutingDecision rejects invalid team_queue."""
+    with pytest.raises(ValueError):
+        RoutingDecision(
+            category="bug",
+            priority="high",
+            team_queue="invalid",
+            reason="Test"
+        )
