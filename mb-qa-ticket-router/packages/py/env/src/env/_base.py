@@ -7,6 +7,7 @@ the Mistral workspace secret of the same name when ``MISTRAL_SECRETS_ENABLED`` i
 needs only ``pydantic-settings`` and ``python-dotenv``.
 """
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -18,21 +19,22 @@ from env._mistral_secrets import MistralSecretsSettingsSource
 
 
 def _find_repo_root() -> Path:
-    for parent in Path(__file__).resolve().parents:
-        if (parent / "package.json").is_file() and (parent / "pyproject.toml").is_file():
-            return parent
+    # Temporal workflow sandbox restricts Path.resolve() - use cwd as fallback
+    try:
+        for parent in Path(__file__).resolve().parents:
+            if (parent / "package.json").is_file() and (parent / "pyproject.toml").is_file():
+                return parent
+    except Exception:
+        # In Temporal sandbox, Path.resolve() may be restricted
+        pass
     return Path.cwd()
 
 
-# Temporal workflow sandbox restricts Path.resolve() - mark as pass-through
-try:
-    import mistralai.workflows as _wf
-    with _wf.unsafe.imports_passed_through():
-        _ROOT_ENV_PATH = _find_repo_root() / ".env"
-except ImportError:
-    _ROOT_ENV_PATH = _find_repo_root() / ".env"
+_ROOT_ENV_PATH = _find_repo_root() / ".env"
 
-load_dotenv(dotenv_path=_ROOT_ENV_PATH, override=False)
+# Only load .env if the file exists - in deployed workers it doesn't
+if _ROOT_ENV_PATH.is_file():
+    load_dotenv(dotenv_path=_ROOT_ENV_PATH, override=False)
 
 
 class BaseEnv(BaseSettings):
