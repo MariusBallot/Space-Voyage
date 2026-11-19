@@ -73,7 +73,7 @@ Respond with a JSON object containing exactly these fields:
 Respond ONLY with the valid JSON object. Do not include any other text, markdown, or explanations."""
 
     response = await client.chat.complete(
-        model="mistral-medium-3-5",
+        model="mistral-medium-latest",
         messages=[
             {
                 "role": "user",
